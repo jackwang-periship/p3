@@ -1,0 +1,12 @@
+1 Beautiful Soup is a Python library for pulling data out of HTML and XML files. 
+2 It works with your favorite parser to provide idiomatic ways of navigating, searching, and modifying the parse tree.
+3 It commonly saves programmers hours or days of work.
+4 These instructions illustrate all major features of Beautiful Soup 4, with examples. 
+5 I show you what the library is good for, how it works, how to use it, how to make it do what you want, 
+6 and what to do when it violates your expectations.
+7 The examples in this documentation should work the same way in Python 2.7 and Python 3.2.
+8 You might be looking for the documentation for Beautiful Soup 3. 
+9 If so, you should know that Beautiful Soup 3 is no longer being developed, 
+10 and that Beautiful Soup 4 is recommended for all new projects. 
+11 If you want to learn about the differences between Beautiful Soup 3 and Beautiful Soup 4, 
+12 see Porting code to BS4.

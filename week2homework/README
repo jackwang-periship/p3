@@ -1,0 +1,23 @@
+Create a Python script that named as "week2hw.py":
+
+(1) The script will takes a SINGLE command line parameter. This parameter is the Python program configuration file name. So when you run it, it should looks like this:
+
+    python week2hw.py c:\full_path_location\week2hw.ini
+
+(2) When the script is being executed, it first prompts the user to enter a web page address, for example:
+    
+    Please enter the website URL: https://www.yahoo.com
+ 
+(3) Once the your script receives the user input URL, you will use the Python standard packages "urllib2" to fetch the web content. Please refer to the following URL for the documentation on how to use urllib2 packages:
+ 
+https://docs.python.org/2/howto/urllib2.html
+ 
+(4) Upon the completion of receiving/fetching the webpage content by calling functions urllib2 module provides, you will store the content to a file on your computer.
+
+(5) You will use the ConfigParser to obtain the file name that you will be storing the web page content. As we have discussed in the class, ConfigParser is used to read the week2hw.ini (the program initialization and configuration file) contents. 
+
+(6) As a hint, the week2hw.ini file might look like this:
+
+[Location]
+DownloadFileName = filename
+
