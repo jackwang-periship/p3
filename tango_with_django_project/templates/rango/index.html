@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Rango</title>
+	<link rel="stylesheet" href="{% static "css/bootstrap/css/base.css" %}" /> <!-- CSS -->
+	<script src="{% static "js/jquery.js" %}"></script> <!-- JavaScript -->
+</head>
+<body>
+	<h1>Rango says...</h1>
+    {% if categories %}
+        <ul>
+            {% for category in categories %}
+            <!-- Following line changed to add an HTML hyperlink -->
+            <li><a href="/rango/category/{{ category.slug }}">{{ category.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <strong>There are no categories present.</strong>
+    {% endif %}
+	<a href="/rango/about/">About</a><br />
+    <img src="{% static "images/logo.png" %}" alt="Picture of PeriShip" /> <!-- New line -->
+</body>
+</html>
