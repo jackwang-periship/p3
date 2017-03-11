@@ -10,8 +10,13 @@
 	<script src="{% static "js/jquery.js" %}"></script> <!-- JavaScript -->
 </head>
 <body>
-	<h1>Rango says...</h1>
+	{% if user.is_authenticated %}
+		<h1>Rango says... hello {{ user.username }}!</h1>
+	{% else %}
+		<h1>Rango says... hello world!</h1>
+	{% endif %}
     {% if categories %}
+    	<h4>Top 5 Categories</h4>
         <ul>
             {% for category in categories %}
             <!-- Following line changed to add an HTML hyperlink -->
@@ -21,6 +26,25 @@
     {% else %}
         <strong>There are no categories present.</strong>
     {% endif %}
+    {% if pages %}
+    	<h4>Top 5 Pages</h4>
+        <ul>
+            {% for page in pages %}
+            <li><a href={{ page.url }}>{{ page.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <strong>There are no categories present.</strong>
+    {% endif %}
+	<a href="/rango/add_category/">Add a New Category</a><br />
+	{% if user.is_authenticated %}
+		<a href="/rango/restricted/">Restricted Page</a><br />
+		<a href="/rango/logout/">Logout</a><br />
+	{% else %}
+		<a href="/rango/register/">Register Here</a><br />
+		<a href="/rango/login/">Login</a><br />
+	{% endif %}
+	<hr>
 	<a href="/rango/about/">About</a><br />
     <img src="{% static "images/logo.png" %}" alt="Picture of PeriShip" /> <!-- New line -->
 </body>
