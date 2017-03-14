@@ -6,41 +6,62 @@ Created on Mar 13, 2017
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-
+import bs4
 
 nws_weather_by_zip = "http://forecast.weather.gov/zipcity.php?inputstring="
 
+
+def returnVALUE(xTag):
+    if xTag and type(xTag) is bs4.element.Tag:
+        return xTag.text.strip()
+    else:
+        return ''
+
+def tempString2Float(x):
+    
+    if x is None:
+        return None
+    temp = float(x[:-2]) 
+    if x[-1]== 'F':
+        c=(temp-32)*5/9
+        return c
+    if x[-1]== 'C':
+        f =(temp*9/5)+32
+        return f
+    return None
+    
+current_conditions_summary = {}
 page = requests.get(nws_weather_by_zip+'07436')
 soup = BeautifulSoup(page.content, 'html.parser')
-seven_day = soup.find(id="seven-day-forecast")
-forecast_items = seven_day.find_all(class_="tombstone-container")
-tonight = forecast_items[0]
-period = tonight.find(class_="period-name").get_text()
-short_desc = tonight.find(class_="short-desc").get_text()
-temp = tonight.find(class_="temp").get_text()
+desc_TAG = soup.find("p", attrs={"class": "myforecast-current"})
+tempF_TAG  = soup.find("p", attrs={"class": "myforecast-current-lrg"})
+tempC_TAG = soup.find("p", attrs={"class": "myforecast-current-sm"})
 
-# print(period)
-# print(short_desc)
-# print(temp)
+current_conditions_summary['desc'] = returnVALUE(desc_TAG)
+current_conditions_summary['tempF'] = tempString2Float(returnVALUE(tempF_TAG))
+current_conditions_summary['tempC'] = tempString2Float(returnVALUE(tempC_TAG))
 
-img = tonight.find("img")
-desc = img['title']
+current_conditions_detail = {}
+current_conditions_detail_TABLE = soup.find("div", attrs={"id": "current_conditions_detail"})
+if current_conditions_detail_TABLE is not None:
+    allHeadingsTAG = current_conditions_detail_TABLE.find_all("td", attrs={"class": "text-right"})
+    allValuesTAG = current_conditions_detail_TABLE.find_all("td", attrs={"class": None})
+    allHeadings = [s.text.strip() for s in allHeadingsTAG]
+    allValues = [s.text.strip() for s in allValuesTAG]
+current_conditions_detail = dict(zip(allHeadings, allValues))
 
-# print(desc)
+seven_day_forecast = soup.find("div", attrs={"id": "seven-day-forecast", "class": "panel panel-default"})
+panel_heading = seven_day_forecast.find("div", attrs={"class": "panel-heading"})
+headline = seven_day_forecast.find("div", attrs={"id": "headline-container"})
+seven_day_forecast_list = seven_day_forecast.find_all(class_="tombstone-container")
 
-period_tags = seven_day.select(".tombstone-container .period-name")
+period_tags = seven_day_forecast.select(".tombstone-container .period-name")
 periods = [pt.get_text() for pt in period_tags]
-# print periods
+short_descs = [sd.get_text() for sd in seven_day_forecast.select(".tombstone-container .short-desc")]
+temps = [t.get_text() for t in seven_day_forecast.select(".tombstone-container .temp")]
 
-short_descs = [sd.get_text() for sd in seven_day.select(".tombstone-container .short-desc")]
-temps = [t.get_text() for t in seven_day.select(".tombstone-container .temp")]
-descs = [d["title"] for d in seven_day.select(".tombstone-container img")]
+descs = [d["title"] for d in seven_day_forecast.select(".tombstone-container img")]
 
-# print(short_descs)
-# print(temps)
-# print(descs)
-
-# pd.set_option('display.max_colwidth', 265)
 weather = pd.DataFrame({
         "period": periods, 
         "short_desc": short_descs, 
@@ -52,68 +73,3 @@ temp_nums = weather["temp"].str.extract("(?P<temp_num>\d+)")
 weather["temp_num"] = temp_nums.astype('int')
 
 print weather
-
-# mydes = []
-# mydes = weather["desc"]
-# for i in mydes:
-#     print i
-
-current_weather = soup.find(id="current_conditions-summary")
-currentCondition = current_weather.find('p')
-for i in currentCondition:
-    print i
-
-
-# bn_watch_list_url = "https://www.bloomberg.com/markets/watchlist"
-# url_elements = urlparse.urlsplit(bn_watch_list_url)
-# page = urllib2.urlopen(bn_watch_list_url)
-# soup = BeautifulSoup(page, 'html.parser')
-# benchmarks_box = soup.find('div', attrs={'class':'benchmarks_table'})
-# myurls = []
-# for trow in benchmarks_box.find_all('a', href=True):
-#     root_url = url_elements[0] + '://' + url_elements[1]
-#     abs_url = urlparse.urljoin(root_url, trow['href'])
-#     myurls.append(abs_url)
-#  
-# indexes = []
-#  
-# for eachURL in myurls:
-#     try:
-#         rowDictionary = {}
-#         name = ''
-#         price = ''
-#         # query the website and return the html to the variable 'page'
-#         page = urllib2.urlopen(eachURL)
-#          
-#         if page is not None:
-#             # parse the html using beautiful soap and store in variable `soup`
-#             soup = BeautifulSoup(page, 'html.parser')  
-#             # Take out the <div> of name and get its value
-#             name_box = soup.find('h1', attrs={'class': 'name'})
-#             if name_box is not None:
-#                 name = name_box.text.strip() # strip() is used to remove starting and trailing  
-#                 # get the index price
-#             price_box = soup.find('div', attrs={'class':'price'})  
-#             if price_box is not None:
-#                 price = price_box.text
-#             if name and price:  
-#                 rowDictionary['name'] = name
-#                 rowDictionary['price'] = price
-#                 indexes.append(rowDictionary)
-#                 print rowDictionary
-#         else:
-#             print "None page content from this URL: " + eachURL
-#     except HTMLParseError as e:
-#         print e
-#     except urllib2.URLError as e:
-#         print e
-#     except urllib2.HTTPError as e:
-#         print e
-#  
-# # open a csv file with append, so old data will not be erased
-# with open('indexes.csv', 'a') as csv_file:
-#     for eachindex in indexes:  
-#         writer = csv.writer(csv_file)
-#         writer.writerow([eachindex['name'], eachindex['price'], datetime.now()])
-# csv_file.close()
-
