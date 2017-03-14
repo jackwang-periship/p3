@@ -1,15 +1,8 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 
 {% load staticfiles %}
 
-<html>
-<head>
-	<meta charset="UTF-8">
-	<title>Rango</title>
-	<link rel="stylesheet" href="{% static "css/bootstrap/css/base.css" %}" /> <!-- CSS -->
-	<script src="{% static "js/jquery.js" %}"></script> <!-- JavaScript -->
-</head>
-<body>
+{% block body_block %}
 	{% if user.is_authenticated %}
 		<h1>Rango says... hello {{ user.username }}!</h1>
 	{% else %}
@@ -19,10 +12,13 @@
     	<h4>Top 5 Categories</h4>
         <ul>
             {% for category in categories %}
-            <!-- Following line changed to add an HTML hyperlink -->
-            <li><a href="/rango/category/{{ category.slug }}">{{ category.name }}</a></li>
+            	<!-- Following line changed to add an HTML hyperlink -->
+            	<li><a href="/rango/category/{{ category.slug }}">{{ category.name }}</a></li>
             {% endfor %}
         </ul>
+	    {% if user.is_authenticated %}
+			<li><a href="/rango/add_category/">Add a New Category</a></li>
+	    {% endif %}
     {% else %}
         <strong>There are no categories present.</strong>
     {% endif %}
@@ -30,22 +26,11 @@
     	<h4>Top 5 Pages</h4>
         <ul>
             {% for page in pages %}
-            <li><a href={{ page.url }}>{{ page.title }}</a></li>
+            	<li><a href={{ page.url }}>{{ page.title }}</a></li>
             {% endfor %}
         </ul>
     {% else %}
         <strong>There are no categories present.</strong>
     {% endif %}
-	<a href="/rango/add_category/">Add a New Category</a><br />
-	{% if user.is_authenticated %}
-		<a href="/rango/restricted/">Restricted Page</a><br />
-		<a href="/rango/logout/">Logout</a><br />
-	{% else %}
-		<a href="/rango/register/">Register Here</a><br />
-		<a href="/rango/login/">Login</a><br />
-	{% endif %}
-	<hr>
-	<a href="/rango/about/">About</a><br />
-    <img src="{% static "images/logo.png" %}" alt="Picture of PeriShip" /> <!-- New line -->
-</body>
-</html>
+
+{% endblock %}

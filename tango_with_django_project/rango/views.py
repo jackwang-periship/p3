@@ -14,7 +14,6 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 
 
-@login_required
 def index(request):
     
     context_dict = {}
@@ -31,6 +30,7 @@ def index(request):
     # Return a rendered response to send to the client.
     # We make use of the shortcut function to make our lives easier.
     # Note that the first parameter is the template we wish to use.
+    context_dict['index'] = "index"
 
     return render(request, 'rango/index.html', context_dict)
 
@@ -64,6 +64,7 @@ def category(request, category_name_slug):
     # Go render the response and return it to the client.
     return render(request, 'rango/category.html', context_dict)
 
+@login_required
 def add_category(request):
     # A HTTP POST?
     if request.method == 'POST':
@@ -88,6 +89,7 @@ def add_category(request):
     # Render the form with error messages (if any).
     return render(request, 'rango/add_category.html', {'form': form})
 
+@login_required
 def add_page(request, category_name_slug):
 
     try:
@@ -115,7 +117,10 @@ def add_page(request, category_name_slug):
     return render(request, 'rango/add_page.html', context_dict)
 
 def about(request):
-    return render(request, 'rango/about.html')
+
+    context_dict = {}
+    context_dict['about'] = "about"
+    return render(request, 'rango/about.html', context_dict)
 
 def register(request):
 
@@ -169,10 +174,13 @@ def register(request):
         user_form = UserForm()
         profile_form = UserProfileForm()
 
+    context_dict = {}
+    context_dict['register'] = "register"
+    context_dict['user_form'] = user_form
+    context_dict['profile_form'] = profile_form
+    context_dict['registered'] = registered
     # Render the template depending on the context.
-    return render(request,
-            'rango/register.html',
-            {'user_form': user_form, 'profile_form': profile_form, 'registered': registered} )
+    return render(request, 'rango/register.html', context_dict )
 
 def user_login(request):
 
@@ -213,7 +221,9 @@ def user_login(request):
     else:
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
-        return render(request, 'rango/login.html', {})
+        context_dict = {}
+        context_dict['login'] = "login"
+        return render(request, 'rango/login.html', context_dict)
     
 @login_required
 def restricted(request):

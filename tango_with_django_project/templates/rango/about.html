@@ -1,19 +1,8 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 
-{% load staticfiles %}
+{% block title %}Rango - About{% endblock %}
 
-<html>
-<head>
-	<meta charset="UTF-8">
-	<title>Rango</title>
-	<link rel="stylesheet" href="{% static "css/bootstrap/css/base.css" %}" /> <!-- CSS -->
-	<script src="{% static "js/jquery.js" %}"></script> <!-- JavaScript -->
-</head>
-<body>
+{% block body_block %}
 	<h1>Rango says...</h1>
-	hello world! <strong>{{ boldmessage }}</strong><br />
-	<hr>
-	<a href="/rango/">Return to the homepage.</a><br />
-    <img src="{% static "images/logo.png" %}" alt="Picture of PeriShip" /> <!-- New line -->
-</body>
-</html>
+	This is Django World! We are learning Django Web Framework<strong>{{ boldmessage }}</strong><br />
+{% endblock %}
