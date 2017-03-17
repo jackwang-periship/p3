@@ -1,0 +1,46 @@
+Python is rich with powerful features and expressive syntax. One of the favorites is decorators. 
+In the context of design patterns, decorators dynamically alter the functionality of a function, 
+method or class without having to directly use subclasses. 
+This is ideal when you need to extend the functionality of functions that you don't want to modify. 
+We can implement the decorator pattern anywhere, but Python facilitates the implementation 
+by providing much more expressive features and syntax for that.
+
+The word "decorators" in Python is:
+essentially works as wrappers, modifying the behavior of the code before and after a target function execution, 
+without the need to modify the function itself, augmenting the original functionality, thus decorating it.
+
+APScheduler has four kinds of components:
+
+triggers
+	contain the scheduling logic. Each job has its own trigger which determines when the job should be run next. 
+	Beyond their initial configuration, triggers are completely stateless.
+
+job stores
+	house the scheduled jobs. The default job store simply keeps the jobs in memory, 
+	but others store them in various kinds of databases. A job’s data is serialized when it is saved to 
+	a persistent job store, and deserialized when it’s loaded back from it. 
+	Job stores (other than the default one) don’t keep the job data in memory, 
+	but act as middlemen for saving, loading, updating and searching jobs in the backend. 
+	Job stores must never be shared between schedulers.
+	
+executors
+	handle the running of the jobs. They do this typically by submitting the designated 
+	callable in a job to a thread or process pool. When the job is done, the 
+	executor notifies the scheduler which them emits an appropriate event.
+
+schedulers
+	bind the rest together. You typically have only one scheduler running in your application. 
+	The application developer doesn’t normally deal with the job stores, 
+	executors or triggers directly. Instead, the scheduler provides the proper interface 
+	to handle all those. Configuring the job stores and executors is done through the scheduler, 
+	as is adding, modifying and removing jobs.
+
+
+
+BlockingScheduler: use when the scheduler is the only thing running in your process
+BackgroundScheduler: use then you’re not using any of the frameworks below, and want the scheduler to run in the background inside your application
+AsyncIOScheduler: use if your application uses the asyncio module
+GeventScheduler: use if your application uses gevent
+TornadoScheduler: use if you’re building a Tornado application
+TwistedScheduler: use if you’re building a Twisted application
+QtScheduler: use if you’re building a Qt application
