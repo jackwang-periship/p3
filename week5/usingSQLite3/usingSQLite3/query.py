@@ -1,7 +1,7 @@
 '''
 Created on Mar 14, 2017
 
-@author: jwang02
+@author: jwang02 Jack
 '''
 import sqlite3
 
